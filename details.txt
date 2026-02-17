@@ -1,0 +1,44 @@
+winget install Python.Python.3.10
+
+py -0
+ -V:3.13 *
+ -V:3.10
+
+py -3.10 -m venv env
+
+
+python -m pip install --upgrade pip
+
+
+pip install torch torchaudio
+
+
+pip install TTS
+
+
+
+ERROR:
+building 'TTS.tts.utils.monotonic_align.core' extension
+error: Microsoft Visual C++ 14.0 or greater is required. Get it with "Microsoft C++ Build Tools": https://visualstudio.microsoft.com/visual-cpp-build-tools/
+[end of output]
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+ERROR: Failed building wheel for TTS
+
+
+✅ Fix: Install Microsoft C++ Build Tools
+🔹 Step 1 — Download Build Tools
+
+Go here:
+👉 https://visualstudio.microsoft.com/visual-cpp-build-tools/
+
+
+🔹 Step 2 — During Installation (IMPORTANT)
+When installer opens:
+✔ Select:
+✅ Desktop development with C++
+On right panel make sure these are checked:
+✅ MSVC v143 - VS 2022 C++ x64/x86 build tools
+✅ Windows 10/11 SDK
+
+ Downloading model to C:\Users\prave\AppData\Local\tts\tts_models--multilingual--multi-dataset--xtts_v2

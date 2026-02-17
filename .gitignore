@@ -30,7 +30,7 @@ env.bak/
 venv.bak/
 
 # Audio files (Recordings and Outputs)
-*.wav
+# *.wav
 *.mp3
 *.m4a
 *.flac

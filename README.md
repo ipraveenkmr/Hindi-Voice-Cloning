@@ -1,65 +1,76 @@
-# Voice Cloning with Coqui TTS (XTTS v2)
+# 🎙️ CodingMSTR Hindi Voice Clone: The Ultimate Eleven Labs Free Alternative
 
-A powerful and efficient voice cloning application using the Coqui TTS library and the XTTS v2 model. This project allows you to clone voices from short audio samples and generate high-quality, natural-sounding speech in multiple languages, including Hindi.
+[![Open Source AI](https://img.shields.io/badge/AI-Open%20Source-blueviolet?style=for-the-badge)](https://github.com/ipraveenkmr/Hindi-Voice-Cloning)
+[![Hindi Support](https://img.shields.io/badge/Language-Hindi%20%26%20Multilingual-orange?style=for-the-badge)](https://github.com/ipraveenkmr/Hindi-Voice-Cloning)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-## 🔑 Keywords
-`Voice Cloning` `Coqui TTS` `XTTS v2` `AI Voice` `Text-to-Speech` `Deep Learning` `Python` `Multilingual TTS` `Hindi TTS` `Speech Synthesis`
+Experience professional-grade **Open Source AI Hindi Voice Cloning** right on your local machine. This project provides a powerful, private, and unlimited solution to **Clone Any Voice in Hindi** using the state-of-the-art **XTTS v2** model.
 
-## 🚀 Features
-- **Zero-Shot Voice Cloning**: Clone any voice using just a short audio sample (`.wav`).
-- **Multilingual Support**: Generate speech in various languages (Hindi, English, etc.).
-- **High Fidelity**: Powered by the state-of-the-art XTTS v2 model.
-- **Modern Desktop UI**: A sleek, glassmorphic desktop interface for easy interaction.
-- **Built-in Player**: Play generated audio directly within the application.
-- **Simple Integration**: Easy-to-use Python scripts for generation.
+## ✨ Why CodingMSTR Voice Clone?
 
-## 📋 Prerequisites
-- **Python**: 3.10 (Recommended)
-- **C++ Build Tools**: Microsoft Visual C++ 14.0 or greater is required (needed for `TTS` package compilation).
-- **GPU (Optional)**: CUDA-enabled GPU for faster inference.
+If you are looking for an **Eleven Labs Free Alternative**, this is it. No character limits, no monthly subscriptions, and 100% data privacy.
 
-## 🛠️ Installation
+*   **Zero-Shot Cloning**: Replicate any voice with just a 10-30 second audio sample.
+*   **Hindi Optimization**: Specifically tuned for Devanagari script, emotional nuances, and regional Hindi accents.
+*   **Modern Desktop Hub**: A sleek, glassmorphic GUI built for performance and ease of use.
+*   **Privacy First**: Entirely local execution. Your voice data never hits the cloud.
 
-1. **Create a Virtual Environment**:
-   ```powershell
-   py -3.10 -m venv env
-   .\env\Scripts\activate
-   ```
+---
 
-2. **Install Dependencies**:
-   ```powershell
-   pip install -r requirements.txt
-   ```
+## 📸 Screenshots
 
-## 📖 Usage
+![Main Interface](Screenshot.png)
+*Modern Glassmorphic UI for seamless interaction*
 
-### 1. Launch the Desktop App (Recommended)
-The easiest way to use CodingMSTRVoiceClone is via the Desktop App.
-Double-click `run_app.bat` or run:
+---
+
+## 🚀 Getting Started (Free Download)
+
+Follow these steps to set up your local voice cloning studio.
+
+### 1. Prerequisites
+- **Python 3.10**: Strictly recommended for compatibility with TTS libraries.
+- **Microsoft C++ Build Tools**: Required for compiling C++ extensions.
+  - **IMPORTANT**: During installation, check "Desktop development with C++", "MSVC v143", and "Windows 10/11 SDK".
+
+### 2. Installation
 ```powershell
-.\env\Scripts\python app.py
-```
-**Steps:**
-1. **Paste Text**: Enter the Hindi or English text.
-2. **Upload Sample**: Select a `.wav` file of the voice to clone.
-3. **Start Cloning**: Click the button and wait for synthesis.
-4. **Play**: Once done, click the play button to hear the result.
+# Clone the repository
+git clone https://github.com/ipraveenkmr/Hindi-Voice-Cloning.git
+cd Hindi-Voice-Cloning
 
-### 2. Command Line Usage
-If you prefer the script:
-1. Prepare `Recording.wav` in the root folder.
-2. Run:
-   ```powershell
-   python main.py
-   ```
-3. Output will be saved as `output.wav`.
+# Create and activate virtual environment
+py -3.10 -m venv env
+.\env\Scripts\activate
+
+# Install high-performance dependencies
+pip install -r requirements.txt
+```
+
+### 3. Running the App
+Launch the desktop application:
+```powershell
+python app.py
+```
+
+---
+
+## 🛠️ Technical Deep Dive
+
+- **Engine**: Coqui TTS with XTTS v2 bridge.
+- **Support**: Multilingual (Native Hindi support).
+- **Inference**: Optimized for both NVIDIA GPU (CUDA) and CPU.
+- **Output**: 24kHz Studio-quality WAV files.
 
 ## 📂 Project Structure
-- `main.py`: The primary script for text-to-speech generation.
-- `test.py`: A simple script to verify model loading.
-- `requirements.txt`: List of required Python packages.
-- `details.txt`: Specific setup notes and troubleshooting.
-- `.gitignore`: Git exclusion rules.
+- `app.py`: The main GUI application (CustomTkinter).
+- `main.py`: Command-line script for batch processing.
+- `details.txt`: Comprehensive troubleshooting and setup logs.
+- `landing.html`: Professional landing page for web deployment.
 
-## ⚖️ License
-This project is for educational and research purposes. Please ensure you have the rights to use any voice data you clone.
+## ⚖️ Ethical Use & License
+This project is for educational and research purposes. Please ensure you have the explicit permission of the individual whose voice you are cloning. 
+
+---
+
+**CodingMSTR Voice Clone** — Empowering creators with Open Source AI.

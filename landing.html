@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Source AI Hindi Voice Cloning - Eleven Labs Free Alternative</title>
+    <meta name="description"
+        content="Clone any voice in Hindi for free. The ultimate Eleven Labs free alternative. Open source AI voice cloning app for high-quality speech synthesis.">
+    <meta name="keywords"
+        content="Free Download, Open Source AI Hindi Voice Cloning, Eleven Labs Free Alternative, Clone Any Voice in Hindi, AI Voice Clone, Hindi TTS, Coqui TTS, XTTS v2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #a855f7;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent: #22d3ee;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated Background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.15) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        header {
+            padding: 8rem 0 4rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1.5rem;
+            border-radius: 99px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            animation: fadeInUp 1.4s ease-out;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 10px 20px -10px var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -10px var(--primary);
+            background: var(--primary-light);
+        }
+
+        .btn-outline {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Features Grid */
+        .features {
+            padding: 6rem 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-light);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-light);
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .feature-card p {
+            color: var(--text-dim);
+        }
+
+        /* Info Section */
+        .info-section {
+            padding: 6rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 40px;
+            margin-bottom: 4rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 1rem;
+        }
+
+        .setup-steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            align-items: flex-start;
+        }
+
+        .step-num {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+
+        .step-content code {
+            display: block;
+            background: #000;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--accent);
+            border: 1px solid var(--glass-border);
+        }
+
+        footer {
+            padding: 4rem 0;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-dim);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 4rem 0;
+            }
+
+            .cta-group {
+                flex-direction: column;
+            }
+
+            .step {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-gradient"></div>
+
+    <div class="container">
+        <header>
+            <div class="hero-badge">Eleven Labs Free Alternative</div>
+            <h1>CodingMSTR <span class="highlight">Voice Clone</span></h1>
+            <p class="hero-desc">
+                The ultimate <strong>Open Source AI Hindi Voice Cloning</strong> solution. Generate natural-sounding,
+                high-quality speech with just a short audio sample. Completely free and runs locally.
+            </p>
+            <div class="cta-group">
+                <a href="#download" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                    </svg>
+                    Free Download
+                </a>
+                <a href="#features" class="btn btn-outline">Explore Features</a>
+            </div>
+        </header>
+
+        <section id="features" class="features">
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>Zero-Shot Hindi Voice Cloning</h3>
+                <p>No training or fine-tuning required. Our <strong>Open Source AI Hindi Voice Cloning</strong> tool
+                    allows you to replicate any voice with just 10-30 seconds of reference audio. Achieve high-fidelity
+                    clones that capture regional accents and emotional nuances.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔊</div>
+                <h3>State-of-the-art XTTS v2</h3>
+                <p>Built on the powerful Coqui TTS bridge, this app uses the <strong>multilingual XTTS v2</strong>
+                    model, widely considered the best <strong>Eleven Labs Free Alternative</strong> for local AI voice
+                    synthesis.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Privacy-First AI</h3>
+                <p>Unlike cloud-based services, your voice data never leaves your computer. Process everything locally
+                    on your GPU or CPU, ensuring 100% data security and zero character costs.</p>
+            </div>
+        </section>
+
+        <!-- Technical Deep Dive Section -->
+        <section class="info-section">
+            <div class="section-header">
+                <h2>Technical Specifications</h2>
+                <p style="color: var(--text-dim)">Professional-grade voice synthesis for creators</p>
+            </div>
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; padding: 0 2rem;">
+                <div
+                    style="background: var(--glass); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--glass-border);">
+                    <h4 style="color: var(--primary-light)">Core Model</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">XTTS v2 (Multilingual)</p>
+                </div>
+                <div
+                    style="background: var(--glass); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--glass-border);">
+                    <h4 style="color: var(--primary-light)">Hindi Support</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Native support for Devanagari script</p>
+                </div>
+                <div
+                    style="background: var(--glass); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--glass-border);">
+                    <h4 style="color: var(--primary-light)">Hardware</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">CUDA-enabled GPU / Optimized CPU</p>
+                </div>
+                <div
+                    style="background: var(--glass); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--glass-border);">
+                    <h4 style="color: var(--primary-light)">Audio Output</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">24kHz High-Fidelity WAV</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <div class="section-header">
+                <h2>Clone Any Voice in Hindi</h2>
+                <p style="color: var(--text-dim)">Why <strong>CodingMSTR Voice Clone</strong> is the best <strong>Eleven
+                        Labs Free Alternative</strong></p>
+            </div>
+
+            <div class="features" style="grid-template-columns: 1fr 1fr; max-width: 900px; margin: 0 auto;">
+                <div class="feature-card">
+                    <h3 style="color: var(--accent)">Eleven Labs (Paid)</h3>
+                    <ul style="color: var(--text-dim); list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem">❌ Restrictive Monthly Subscriptions</li>
+                        <li style="margin-bottom: 0.5rem">❌ Expensive Character Limits</li>
+                        <li style="margin-bottom: 0.5rem">❌ Requires Internet Connection</li>
+                        <li>❌ Privacy Risks for Voice Samples</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="border-color: var(--primary)">
+                    <h3 style="color: var(--primary-light)">CodingMSTR (Free)</h3>
+                    <ul style="color: var(--text-dim); list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem">✅ Forever <strong>Free Download</strong></li>
+                        <li style="margin-bottom: 0.5rem">✅ Unlimited Voice Generations</li>
+                        <li style="margin-bottom: 0.5rem">✅ Desktop App for Offline Use</li>
+                        <li>✅ Complete Sovereignty Over Data</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="info-section">
+            <div class="section-header">
+                <h2>Installation & Setup Guide</h2>
+                <p style="color: var(--text-dim); max-width: 600px; margin: 0 auto;">Follow these professional steps to
+                    set up your local environment for <strong>Open Source AI Hindi Voice Cloning</strong>.</p>
+            </div>
+
+            <div class="setup-steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <h3>Prerequisites</h3>
+                        <p>Install Python 3.10 and **Microsoft C++ Build Tools**. Ensure you select "Desktop development
+                            with C++" during installation to avoid compilation errors.</p>
+                        <code style="word-break: break-all;">winget install Python.Python.3.10</code>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <h3>Environment Setup</h3>
+                        <p>Create a dedicated virtual environment and install the required AI modules including `TTS`
+                            and `torch`.</p>
+                        <code>py -3.10 -m venv env<br>.\env\Scripts\activate<br>pip install -r requirements.txt</code>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <h3>Launch the GUI</h3>
+                        <p>Start the CodingMSTR modern dashboard, paste your Hindi script, upload your voice sample, and
+                            click "Start Cloning".</p>
+                        <code>python app.py</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section
+            style="background: rgba(255, 68, 68, 0.05); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255, 68, 68, 0.2); margin-bottom: 4rem;">
+            <h3 style="color: #ff4444; margin-bottom: 1rem;">⚠️ Common Installation Fix (MSVC Error)</h3>
+            <p style="color: var(--text-dim); font-size: 0.95rem;">
+                If you encounter a "Microsoft Visual C++ 14.0 or greater is required" error, download the Build Tools
+                from the visual studio website and ensure you check the <strong>MSVC v143</strong> and <strong>Windows
+                    10/11 SDK</strong> boxes. This is essential for building the TTS engine's core C++ extensions.
+            </p>
+        </section>
+
+        <section id="download" style="text-align: center; padding: 6rem 0;">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem;">Ready to Start?</h2>
+            <p class="hero-desc">Experience the power of <strong>Open Source AI Hindi Voice Cloning</strong> today.</p>
+            <a href="#" class="btn btn-primary btn-large" style="font-size: 1.25rem; padding: 1.5rem 4rem;">
+                Free Download Now
+            </a>
+            <p style="margin-top: 2rem; color: var(--text-dim)">Clone Any Voice in Hindi with just one click.</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Open Source AI Hindi Voice Cloning Project. For educational and research purposes.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,362 +1,218 @@
-import flet as ft
+import customtkinter as ctk
+import tkinter as tk
+from tkinter import filedialog, messagebox
+import threading
 import os
-import asyncio
 import time
 from TTS.api import TTS
+import torch
 
-# Modern Glassmorphism Voice Cloner App (Async Version)
-# Architecture:
-# - Flet (Flutter for Python) for the Desktop UI
-# - TTS (Coqui) for the backend logic
-# - Async architecture for modern Flet (0.21+) compatibility
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
 
 
-class VoiceClonerApp:
-    def __init__(self, page: ft.Page):
-        self.page = page
+class VoiceClonerApp(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+
+        self.title("CodingMSTR Voice Clone - XTTS v2")
+        self.geometry("850x750")
+        self.resizable(True, True)
+
+        # State
         self.tts = None
         self.speaker_wav_path = None
-        self.is_cloning = False
         self.output_path = "output_cloned.wav"
+        self.is_cloning = False
 
-    async def init(self):
-        # Configure Page
-        self.page.title = "CodingMSTRVoiceClone - Premium Voice Cloning"
-        self.page.theme_mode = ft.ThemeMode.DARK
-        self.page.padding = 0
-        self.page.window_width = 900
-        self.page.window_height = 850
-        self.page.bgcolor = ft.Colors.BLACK
-        self.page.window_resizable = True
+        self.build_ui()
+        self.initialize_engine_async()
 
-        await self.setup_ui()
-        self.page.update()
+    # ================= UI =================
 
-        # Start engine initialization as a background task
-        asyncio.create_task(self.initialize_engine())
+    def build_ui(self):
 
-    async def setup_ui(self):
-        # 1. Background Decor
-        self.bg_glow = ft.Stack(
-            [
-                ft.Container(
-                    width=500,
-                    height=500,
-                    bgcolor=ft.Colors.with_opacity(0.15, ft.Colors.PURPLE_900),
-                    border_radius=250,
-                    blur=ft.Blur(100, 100),
-                    top=-150,
-                    right=-150,
-                ),
-                ft.Container(
-                    width=400,
-                    height=400,
-                    bgcolor=ft.Colors.with_opacity(0.15, ft.Colors.CYAN_900),
-                    border_radius=200,
-                    blur=ft.Blur(80, 80),
-                    bottom=-100,
-                    left=-100,
-                ),
-            ]
+        self.grid_columnconfigure(0, weight=1)
+
+        # Header
+        header = ctk.CTkLabel(
+            self,
+            text="CodingMSTR Voice Clone",
+            font=ctk.CTkFont(size=28, weight="bold"),
+        )
+        header.pack(pady=(30, 5))
+
+        subtitle = ctk.CTkLabel(
+            self,
+            text="Professional Hindi Voice Cloning (XTTS v2)",
+            font=ctk.CTkFont(size=14),
+        )
+        subtitle.pack(pady=(0, 20))
+
+        # Text Input
+        self.textbox = ctk.CTkTextbox(
+            self,
+            height=180,
+            corner_radius=12,
+        )
+        self.textbox.pack(padx=40, fill="x")
+        self.textbox.insert(
+            "0.0",
+            "नमस्ते, आप कैसे हैं? (Paste your text here...)"
         )
 
-        # 2. Components
-        self.status_text = ft.Text(
-            "Checking environment...", color=ft.Colors.WHITE70, italic=True
+        # File Section
+        file_frame = ctk.CTkFrame(self)
+        file_frame.pack(pady=20, padx=40, fill="x")
+
+        self.select_btn = ctk.CTkButton(
+            file_frame,
+            text="Select Sample (.wav / .mp3)",
+            command=self.select_sample,
         )
-        self.progress_ring = ft.ProgressRing(
-            visible=True, width=24, height=24, stroke_width=3, color=ft.Colors.CYAN_400
+        self.select_btn.pack(side="left", padx=10, pady=10)
+
+        self.sample_label = ctk.CTkLabel(
+            file_frame,
+            text="No voice sample selected"
         )
+        self.sample_label.pack(side="left", padx=10)
 
-        self.textarea = ft.TextField(
-            label="Text to Clone",
-            hint_text="नमस्ते, आप कैसे हैं? (Paste your text here...)",
-            multiline=True,
-            min_lines=6,
-            max_lines=10,
-            border_radius=15,
-            border_color=ft.Colors.with_opacity(0.2, ft.Colors.WHITE),
-            cursor_color=ft.Colors.CYAN_400,
-            focused_border_color=ft.Colors.CYAN_400,
-            text_style=ft.TextStyle(size=14, color=ft.Colors.WHITE),
-            on_change=self.validate_inputs,
+        # Clone Button
+        self.clone_btn = ctk.CTkButton(
+            self,
+            text="Start Cloning",
+            state="disabled",
+            command=self.start_cloning,
+            height=40
         )
+        self.clone_btn.pack(pady=10)
 
-        # self.file_picker = ft.FilePicker(on_result=self.on_file_result)
-        # self.page.overlay.append(self.file_picker)
-        self.file_picker = ft.FilePicker()
-        self.file_picker.on_result = self.on_file_result
-        self.page.services.append(self.file_picker)
-
-        self.sample_btn = ft.FilledButton(
-            "Select Sample (.wav)",
-            icon=ft.Icons.UPLOAD_FILE,
-            on_click=self.pick_sample,
-            style=ft.ButtonStyle(
-                color=ft.Colors.WHITE,
-                bgcolor=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
-                padding=20,
-                shape=ft.RoundedRectangleBorder(radius=12),
-            ),
+        # Status
+        self.status_label = ctk.CTkLabel(
+            self,
+            text="Loading TTS engine...",
+            font=ctk.CTkFont(size=13)
         )
+        self.status_label.pack(pady=10)
 
-        self.sample_info = ft.Text(
-            "No voice sample attached", color=ft.Colors.WHITE38, size=12
+        # Progress bar
+        self.progress = ctk.CTkProgressBar(self)
+        self.progress.pack(padx=100, fill="x")
+        self.progress.set(0)
+
+        # Play Button
+        self.play_btn = ctk.CTkButton(
+            self,
+            text="Play Generated Audio",
+            command=self.play_audio,
+            state="disabled"
         )
+        self.play_btn.pack(pady=20)
 
-        self.clone_btn = ft.FilledButton(
-            "Start Cloning",
-            icon=ft.Icons.ROCKET_LAUNCH,
-            on_click=self.start_cloning,
-            disabled=True,
-            style=ft.ButtonStyle(
-                color=ft.Colors.BLACK,
-                bgcolor=ft.Colors.CYAN_400,
-                padding=20,
-                shape=ft.RoundedRectangleBorder(radius=12),
-            ),
-        )
+    # ================= TTS Initialization =================
 
-        if hasattr(ft, "Audio"):
-            self.audio_player = ft.Audio(
-                src="",
-                autoplay=False,
-            )
-            self.page.overlay.append(self.audio_player)
-        else:
-            self.audio_player = None
+    def initialize_engine_async(self):
+        thread = threading.Thread(target=self.initialize_engine)
+        thread.daemon = True
+        thread.start()
 
-        self.play_btn = ft.Container(
-            content=ft.Row(
-                [
-                    ft.Icon(
-                        ft.Icons.PLAY_CIRCLE_FILL, color=ft.Colors.CYAN_400, size=32
-                    ),
-                    ft.Text(
-                        "Play Generated Audio", color=ft.Colors.CYAN_400, weight="bold"
-                    ),
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-            ),
-            on_click=self.play_audio,
-            # visible=False,
-            padding=10,
-            border_radius=10,
-            bgcolor=ft.Colors.with_opacity(0.1, ft.Colors.CYAN_400),
-        )
-
-        # 3. Glass Card Design
-        self.glass_card = ft.Container(
-            content=ft.Column(
-                [
-                    # Header
-                    ft.Row(
-                        [
-                            ft.Icon(
-                                ft.Icons.FINGERPRINT, color=ft.Colors.CYAN_400, size=40
-                            ),
-                            ft.Column(
-                                [
-                                    ft.Text(
-                                        "CodingMSTRVoiceClone",
-                                        size=28,
-                                        weight="bold",
-                                        color=ft.Colors.WHITE,
-                                    ),
-                                    ft.Text(
-                                        "Professional Hindi Voice Cloning",
-                                        size=14,
-                                        color=ft.Colors.CYAN_200,
-                                    ),
-                                ],
-                                spacing=0,
-                            ),
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                    ),
-                    ft.Divider(
-                        height=40, color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE)
-                    ),
-                    # Input Section
-                    self.textarea,
-                    # File Section
-                    ft.Row(
-                        [
-                            ft.Column([self.sample_btn, self.sample_info], spacing=5),
-                            self.clone_btn,
-                        ],
-                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                    ),
-                    ft.Divider(
-                        height=40, color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE)
-                    ),
-                    # Status & Progress
-                    ft.Container(
-                        content=ft.Column(
-                            [
-                                ft.Row(
-                                    [
-                                        self.progress_ring,
-                                        self.status_text,
-                                    ],
-                                    alignment=ft.MainAxisAlignment.CENTER,
-                                    spacing=15,
-                                ),
-                                ft.AnimatedSwitcher(
-                                    self.play_btn,
-                                    transition=ft.AnimatedSwitcherTransition.SCALE,
-                                    duration=500,
-                                ),
-                            ],
-                            spacing=20,
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                        ),
-                        padding=20,
-                        border_radius=20,
-                        bgcolor=ft.Colors.with_opacity(0.03, ft.Colors.WHITE),
-                    ),
-                    # Footer
-                    ft.Text(
-                        "Powered by Coqui XTTS v2",
-                        size=10,
-                        color=ft.Colors.WHITE24,
-                        text_align=ft.TextAlign.CENTER,
-                    ),
-                ],
-                spacing=20,
-                alignment=ft.MainAxisAlignment.START,
-            ),
-            padding=40,
-            width=700,
-            border_radius=30,
-            bgcolor=ft.Colors.with_opacity(0.08, ft.Colors.WHITE),
-            blur=ft.Blur(25, 25),
-            border=ft.Border.all(1, ft.Colors.with_opacity(0.1, ft.Colors.WHITE)),
-        )
-
-        # Main Layout
-        self.page.add(
-            ft.Stack(
-                [
-                    self.bg_glow,
-                    ft.Container(
-                        content=self.glass_card,
-                        alignment=ft.Alignment.CENTER,
-                        expand=True,
-                        padding=20,
-                    ),
-                ],
-                expand=True,
-            )
-        )
-
-    async def initialize_engine(self):
-        await self.set_status("Loading TTS models... (Downloading if missing)", True)
+    def initialize_engine(self):
         try:
-            # Running synchronous heavy initialization in a separate thread to keep UI alive
-            loop = asyncio.get_running_loop()
-            self.tts = await loop.run_in_executor(
-                None, lambda: TTS("tts_models/multilingual/multi-dataset/xtts_v2")
-            )
-
-            import torch
+            self.update_status("Loading XTTS model...")
+            self.tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2")
 
             device = "cuda" if torch.cuda.is_available() else "cpu"
             self.tts.to(device)
 
-            await self.set_status(f"System Ready ({device.upper()} mode)")
-            await self.validate_inputs(None)
-        except Exception as e:
-            await self.set_status(
-                f"Initialization Error: {str(e)}", False, ft.Colors.RED_400
-            )
+            self.update_status(f"System Ready ({device.upper()} mode)")
+            self.check_inputs()
 
-    async def pick_sample(self, e):
-        await self.file_picker.pick_files(
-            allow_multiple=False, allowed_extensions=["wav", "mp3"]
+        except Exception as e:
+            self.update_status(f"Initialization Error: {e}")
+
+    # ================= File Selection =================
+
+    def select_sample(self):
+        file_path = filedialog.askopenfilename(
+            filetypes=[("Audio Files", "*.wav *.mp3")]
         )
 
-    async def on_file_result(self, e):
-        if e.files:
-            self.speaker_wav_path = e.files[0].path
-            self.sample_info.value = (
-                f"Selected: {os.path.basename(self.speaker_wav_path)}"
+        if file_path:
+            self.speaker_wav_path = file_path
+            self.sample_label.configure(
+                text=f"Selected: {os.path.basename(file_path)}"
             )
-            await self.validate_inputs(None)
+            self.check_inputs()
 
-    async def validate_inputs(self, e):
-        valid = bool(self.tts and self.speaker_wav_path and self.textarea.value.strip())
-        self.clone_btn.disabled = not valid
-        self.page.update()
+    # ================= Validation =================
 
-    async def set_status(self, text, loading=False, color=None):
-        self.status_text.value = text
-        if color:
-            self.status_text.color = color
+    def check_inputs(self):
+        text = self.textbox.get("0.0", "end").strip()
+        valid = bool(self.tts and self.speaker_wav_path and text)
+
+        if valid:
+            self.clone_btn.configure(state="normal")
         else:
-            self.status_text.color = ft.Colors.WHITE70
-        self.progress_ring.visible = loading
-        self.page.update()
+            self.clone_btn.configure(state="disabled")
 
-    async def start_cloning(self, e):
+    # ================= Cloning =================
+
+    def start_cloning(self):
         if self.is_cloning:
             return
 
         self.is_cloning = True
-        self.clone_btn.disabled = True
-        self.play_btn.visible = False
-        await self.set_status(
-            "Synthesis in progress... Please wait", True, ft.Colors.CYAN_200
-        )
+        self.clone_btn.configure(state="disabled")
+        self.play_btn.configure(state="disabled")
+        self.progress.start()
+        self.update_status("Synthesis in progress...")
 
-        # Run cloning logic as a background task
-        asyncio.create_task(self.run_cloning_logic())
+        thread = threading.Thread(target=self.run_cloning)
+        thread.daemon = True
+        thread.start()
 
-    async def run_cloning_logic(self):
-        start_time = time.time()
+    def run_cloning(self):
         try:
-            # Running synchronous heavy TTS in a separate thread
-            loop = asyncio.get_running_loop()
-            text = self.textarea.value.strip()
-            speaker_wav = self.speaker_wav_path
+            start_time = time.time()
 
-            await loop.run_in_executor(
-                None,
-                lambda: self.tts.tts_to_file(
-                    text=text,
-                    speaker_wav=speaker_wav,
-                    language="hi",
-                    file_path=self.output_path,
-                ),
+            text = self.textbox.get("0.0", "end").strip()
+
+            self.tts.tts_to_file(
+                text=text,
+                speaker_wav=self.speaker_wav_path,
+                language="hi",
+                file_path=self.output_path,
             )
 
             elapsed = round(time.time() - start_time, 1)
-            await self.set_status(
-                f"Voice cloned in {elapsed}s!", False, ft.Colors.GREEN_400
-            )
 
-            if self.audio_player:
-                self.audio_player.src = self.output_path
-            self.play_btn.visible = True
-            self.page.update()
+            self.progress.stop()
+            self.progress.set(1)
+
+            self.update_status(f"Voice cloned in {elapsed}s!")
+            self.play_btn.configure(state="normal")
 
         except Exception as e:
-            await self.set_status(f"Cloning Error: {str(e)}", False, ft.Colors.RED_400)
+            self.update_status(f"Cloning Error: {e}")
         finally:
             self.is_cloning = False
-            await self.validate_inputs(None)
+            self.check_inputs()
 
-    async def play_audio(self, e):
-        if self.audio_player and self.audio_player.src:
-            await self.audio_player.play_async()
-        elif os.path.exists(self.output_path):
+    # ================= Audio =================
+
+    def play_audio(self):
+        if os.path.exists(self.output_path):
             os.startfile(self.output_path)
+        else:
+            messagebox.showerror("Error", "Audio file not found.")
 
+    # ================= Helpers =================
 
-async def main(page: ft.Page):
-    app = VoiceClonerApp(page)
-    await app.init()
+    def update_status(self, text):
+        self.status_label.configure(text=text)
 
 
 if __name__ == "__main__":
-    ft.run(main)
+    app = VoiceClonerApp()
+    app.mainloop()

@@ -287,7 +287,7 @@ class VoiceClonerApp:
     async def validate_inputs(self, e):
         valid = bool(self.tts and self.speaker_wav_path and self.textarea.value.strip())
         self.clone_btn.disabled = not valid
-        await self.page.update_async()
+        self.page.update()
 
     async def set_status(self, text, loading=False, color=None):
         self.status_text.value = text
@@ -296,7 +296,7 @@ class VoiceClonerApp:
         else:
             self.status_text.color = ft.Colors.WHITE70
         self.progress_ring.visible = loading
-        await self.page.update_async()
+        self.page.update()
 
     async def start_cloning(self, e):
         if self.is_cloning:
@@ -338,7 +338,7 @@ class VoiceClonerApp:
             if self.audio_player:
                 self.audio_player.src = self.output_path
             self.play_btn.visible = True
-            await self.page.update_async()
+            self.page.update()
 
         except Exception as e:
             await self.set_status(f"Cloning Error: {str(e)}", False, ft.Colors.RED_400)
